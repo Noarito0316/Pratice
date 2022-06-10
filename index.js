@@ -1,6 +1,8 @@
 /* index.js */
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser.json());
 
 const recipes = [
   { id: 1, name: 'Lasanha', price: 40.0, waitTime: 30 },
@@ -17,6 +19,12 @@ const drinks = [
 	{ id: 6, name: 'Água Mineral 500 ml', price: 5.0 },
 ];
 
+app.post('/recipes', function (req, res) {
+    const { id, name, price } = req.body;
+    recipes.push({ id, name, price});
+    res.status(201).json({ message: 'Recipe created successfully!'});
+  });
+
 app.get('/recipes', function (req, res) {
   res.json(recipes);
 });
@@ -25,21 +33,24 @@ app.get('/drinks', function (req, res) {
     res.json(drinks);
   });
 
-//   app.get('/recipes/:id', function (req, res) {
-//     const { id } = req.params;
-//     const recipe = recipes.find((r) => r.id === Number(id));
-  
-//     if (!recipe) return res.status(404).json({ message: 'Recipe not found!'});
-  
-//     res.status(200).json(recipe);
-//   });
-
   app.get('/recipes/search', function (req, res) {
     const { name } = req.query;
     const filteredRecipes = recipes.filter((r) => r.name.includes(name));
     if (!filteredRecipes) return res.status(404).json({ message: 'Expecific Recipe not found!'});
     res.status(200).json(filteredRecipes);
   });
+
+app.get('/recipes/:id', function (req, res) {
+  const { id } = req.params;
+  const recipe = recipes.find((r) => r.id === Number(id));
+  
+  if (!recipe) return res.status(404).json({ message: 'Recipe not found!'});
+  
+  res.status(200).json(recipe);
+});
+
+
+
 
   app.get('/drinks/:id', function (req, res) {
     const { id } = req.params;
