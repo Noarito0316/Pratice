@@ -25,13 +25,20 @@ app.get('/drinks', function (req, res) {
     res.json(drinks);
   });
 
-  app.get('/recipes/:id', function (req, res) {
-    const { id } = req.params;
-    const recipe = recipes.find((r) => r.id === Number(id));
+//   app.get('/recipes/:id', function (req, res) {
+//     const { id } = req.params;
+//     const recipe = recipes.find((r) => r.id === Number(id));
   
-    if (!recipe) return res.status(404).json({ message: 'Recipe not found!'});
+//     if (!recipe) return res.status(404).json({ message: 'Recipe not found!'});
   
-    res.status(200).json(recipe);
+//     res.status(200).json(recipe);
+//   });
+
+  app.get('/recipes/search', function (req, res) {
+    const { name } = req.query;
+    const filteredRecipes = recipes.filter((r) => r.name.includes(name));
+    if (!filteredRecipes) return res.status(404).json({ message: 'Expecific Recipe not found!'});
+    res.status(200).json(filteredRecipes);
   });
 
   app.get('/drinks/:id', function (req, res) {
